@@ -31,6 +31,7 @@ public:
 	bool checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color);
 	bool checkIllegalIndexes(const std::string& dest);
 	bool checkIndexesSame(const std::string& source, const std::string& dest);
+	void move(const std::string& source, const std::string& destination);
 	void translateStringToIndexes(const std::string& str, int indexes[]);
 	ChessPiece*** getBoard();
 	void printBoard();

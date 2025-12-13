@@ -10,7 +10,21 @@ Board::Board()
 	}
 	initPlayerSide("white");
 	initPlayerSide("black");
-	for (i = WHITE_PAWN_ROW + 1; i < BLACK_PAWN_ROW; i++)
+	for (i = 0; i < ROWS_AND_COLS; i++)
+	{
+		if (i != LEFT_ROOK && i != RIGHT_ROOK && i != KING)
+		{
+			_board[WHITE_ROW][i] = new EmptyChessPiece("empty", "empty");
+		}
+	}
+	for (i = 0; i < ROWS_AND_COLS; i++)
+	{
+		if (i != LEFT_ROOK && i != RIGHT_ROOK && i != KING)
+		{
+			_board[BLACK_ROW][i] = new EmptyChessPiece("empty", "empty");
+		}
+	}
+	for (i = WHITE_PAWN_ROW; i <= BLACK_PAWN_ROW; i++)
 	{
 		for (j = 0; j < ROWS_AND_COLS; j++)
 		{
@@ -26,17 +40,17 @@ void Board::initPlayerSide(const std::string& color)
 	int pawnRow = color == "white" ? WHITE_PAWN_ROW : BLACK_PAWN_ROW;
 	int i = 0;
 	_board[row][LEFT_ROOK] = new Rook("rook", color);
-	_board[row][LEFT_KNIGHT] = new Knight("knight", color);
-	_board[row][LEFT_BISHOP] = new Bishop("rook", color);
+	//_board[row][LEFT_KNIGHT] = new Knight("knight", color);
+	//_board[row][LEFT_BISHOP] = new Bishop("bishop", color);
 	_board[row][KING] = new King("king", color);
-	_board[row][QUEEN] = new Queen("queen", color);
-	_board[row][RIGHT_BISHOP] = new Bishop("bishop", color);
-	_board[row][RIGHT_KNIGHT] = new Knight("knight", color);
+	//_board[row][QUEEN] = new Queen("queen", color);
+	//_board[row][RIGHT_BISHOP] = new Bishop("bishop", color);
+	//_board[row][RIGHT_KNIGHT] = new Knight("knight", color);
 	_board[row][RIGHT_ROOK] = new Rook("rook", color);
-	for (i = 0; i < ROWS_AND_COLS; i++)
-	{
-		_board[pawnRow][i] = new Pawn("pawn", color);
-	}
+	//for (i = 0; i < ROWS_AND_COLS; i++)
+	//{
+	//	_board[pawnRow][i] = new Pawn("pawn", color);
+	//}
 }
 Board::~Board()
 {
@@ -129,4 +143,12 @@ void Board::printBoard()
 ChessPiece* Board::getPiece(int firstIndex, int secondIndex)
 {
 	return _board[firstIndex][secondIndex];
+}
+void Board::move(const std::string& source, const std::string& destination)
+{
+	int* sourceArr = new int[2];
+	int* destArr = new int[2];
+	translateStringToIndexes(source, sourceArr);
+	translateStringToIndexes(destination, destArr);
+	std::cout << _board[sourceArr[0]][sourceArr[1]]->checkLegalMove(sourceArr, destArr, *this);
 }
