@@ -8,7 +8,7 @@ Pawn::~Pawn()
 {
 }
 
-bool Pawn::checkLegalMove(const std::string& source, const std::string& dest)
+bool Pawn::checkLegalMove(int source[], int destination[], Board board)
 {
     // Pawn move logic goes here
 }

@@ -8,7 +8,7 @@ Rook::~Rook()
 {
 }
 
-bool Rook::checkLegalMove(const std::string& source, const std::string& dest)
+bool Rook::checkLegalMove(int source[], int destination[], Board board)
 {
     // Rook move logic goes here
 }

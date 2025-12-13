@@ -8,7 +8,7 @@ Bishop::~Bishop()
 {
 }
 
-bool Bishop::checkLegalMove(const std::string& source, const std::string& dest)
+bool Bishop::checkLegalMove(int source[], int destination[], Board board)
 {
     // Bishop move logic goes here
 }

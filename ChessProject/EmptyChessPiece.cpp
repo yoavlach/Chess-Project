@@ -8,7 +8,7 @@ EmptyChessPiece::~EmptyChessPiece()
 {
 }
 
-bool EmptyChessPiece::checkLegalMove(const std::string& source, const std::string& dest)
+bool EmptyChessPiece::checkLegalMove(int source[], int destination[], Board board)
 {
     return false;
 }

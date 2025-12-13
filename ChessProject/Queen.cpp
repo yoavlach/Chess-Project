@@ -8,7 +8,7 @@ Queen::~Queen()
 {
 }
 
-bool Queen::checkLegalMove(const std::string& source, const std::string& dest)
+bool Queen::checkLegalMove(int source[], int destination[], Board board)
 {
     // Queen move logic goes here
 }
