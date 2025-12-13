@@ -8,7 +8,7 @@ Knight::~Knight()
 {
 }
 
-bool Knight::checkLegalMove(const std::string& source, const std::string& dest)
+bool Knight::checkLegalMove(int source[], int destination[], Board board)
 {
     // Knight move logic goes here
 }
