@@ -1,6 +1,6 @@
 #include "EmptyChessPiece.h"
 
-EmptyChessPiece::EmptyChessPiece(const std::string& color) : ChessPiece(color, "EmptyChessPiece")
+EmptyChessPiece::EmptyChessPiece(const std::string& type, const std::string& color) : ChessPiece(color, type)
 {
 }
 

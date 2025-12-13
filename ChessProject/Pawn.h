@@ -1,10 +1,11 @@
 #pragma once
 #include "ChessPiece.h"
+#include "Board.h"
 
 class Pawn : public ChessPiece
 {
 public:
-    Pawn(const std::string& color);
+    Pawn(const std::string& type, const std::string& color);
     virtual bool checkLegalMove(int source[], int destination[], Board board) override;
     virtual ~Pawn();
 };

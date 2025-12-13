@@ -1,6 +1,6 @@
 #include "Knight.h"
 
-Knight::Knight(const std::string& color) : ChessPiece(color, "Knight")
+Knight::Knight(const std::string& type, const std::string& color) : ChessPiece(color, type)
 {
 }
 
@@ -10,5 +10,5 @@ Knight::~Knight()
 
 bool Knight::checkLegalMove(int source[], int destination[], Board board)
 {
-    // Knight move logic goes here
+    return false;
 }
