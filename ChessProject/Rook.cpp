@@ -1,13 +1,22 @@
 #include "Rook.h"
 
+/*Initializes a rook
+input: the rook's type and color
+output: none*/
 Rook::Rook(const std::string& type, const std::string& color) : ChessPiece(color, type)
 {
 }
 
+/*Clears a rook
+input: none
+output: none*/
 Rook::~Rook()
 {
 }
 
+/*Checks if a move is legal for a rook
+input: the source coordinates, the destination coordinates and the board
+output: none*/
 void Rook::checkLegalMove(int source[], int destination[], const Board& board)
 {
     int srcRow = source[0];
@@ -83,6 +92,9 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
     ChessPiece* targetPiece = board.getPiece(destRow, destCol);
 }
 
+/*Checks if the rook is checking the enemy king
+input: the source coordinates and the board
+output: true if the rook is checking the king, false otherwise*/
 bool Rook::checkMakeCheck(int source[], const Board& board)
 {
     int srcRow = source[ROW_INDEX];

@@ -4,6 +4,9 @@
 
 using namespace std;
 
+/*Attempts to move a piece and handles any exceptions
+input: the board, the source coordinates and the destination coordinates
+output: none*/
 void tryMove(Board& board, string source, string dest)
 {
 	cout << "Move " << source << " to " << dest << "\n";

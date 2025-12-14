@@ -1,5 +1,8 @@
 #include "Board.h"
 
+/*Initializes the board
+input: none
+output: none*/
 Board::Board()
 {
 	int i = 0, j = 0;
@@ -20,8 +23,12 @@ Board::Board()
 	_turn = true;
 }
 
+/*Initializes a player's side of the board
+input: the color of the player
+output: none*/
 void Board::initPlayerSide(const std::string& color)
 {
+	// left the other pieces commented for now
 	int row = color == "white" ? WHITE_ROW : BLACK_ROW;
 	int pawnRow = color == "white" ? WHITE_PAWN_ROW : BLACK_PAWN_ROW;
 	int i = 0;
@@ -41,6 +48,10 @@ void Board::initPlayerSide(const std::string& color)
 	//	_board[pawnRow][i] = new Pawn("pawn", color);
 	//}
 }
+
+/*Clears the board
+input: none
+output: none*/
 Board::~Board()
 {
 	int i = 0, j = 0;
@@ -52,40 +63,9 @@ Board::~Board()
 		}
 	}
 }
-//bool Board::checkIfMakeCheck(const std::string& source, const std::string& dest)
-//{
-//	int i = 0, j = 0;
-//	bool makeCheck = false;
-//	std::string currColor = _turn ? "white" : "black";
-//	for (i = 0; i < ROWS_AND_COLS; i++)
-//	{
-//		for (j = 0; j < ROWS_AND_COLS; j++)
-//		{
-//			if (_board[i][j]->getColor() == currColor && _board[i][j]->checkMakeCheck())
-//			{
-//				makeCheck = true;
-//			}
-//		}
-//	}
-//	return makeCheck;
-//}
-//bool Board::CheckIfCauseCheck(const std::string& source, const std::string& dest)
-//{
-//	int i = 0, j = 0;
-//	bool causeCheck = false;
-//	std::string currColor = _turn ? "white" : "black";
-//	for (i = 0; i < ROWS_AND_COLS; i++)
-//	{
-//		for (j = 0; j < ROWS_AND_COLS; j++)
-//		{
-//			if (_board[i][j]->getColor() != currColor && _board[i][j]->checkMakeCheck())
-//			{
-//				causeCheck = true;
-//			}
-//		}
-//	}
-//	return causeCheck;
-//}
+/*Checks if there is a piece of the same color at the destination
+input: the destination coordinates and the player color
+output: none*/
 void Board::checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color) const
 {
 	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
@@ -95,6 +75,10 @@ void Board::checkIfPlayerOfSameColorInDest(const std::string& dest, const std::s
 		throw std::string("Piece in destination belongs to current player");
 	}
 }
+
+/*Checks if the piece at the source belongs to the current player
+input: the source coordinates and the player color
+output: none*/
 void Board::checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color)  const
 {
 	int* srcArr = new int[BOARD_INDEX_ARR_SIZE];
@@ -104,6 +88,10 @@ void Board::checkIfPlayerOfSameColorInSource(const std::string& source, const st
 		throw std::string("Piece in source doesn't belong to current player");
 	}
 }
+
+/*Checks if the destination coordinates are valid
+input: the destination coordinates
+output: none*/
 void Board::checkIllegalIndexes(const std::string& dest) const
 {
 	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
@@ -114,6 +102,10 @@ void Board::checkIllegalIndexes(const std::string& dest) const
 		throw std::string("Illegal indexes");
 	}
 }
+
+/*Checks if the source and destination coordinates are the same
+input: the source and destination coordinates
+output: none*/
 void Board::checkIndexesSame(const std::string& source, const std::string& dest) const
 {
 	if (source == dest)
@@ -121,15 +113,27 @@ void Board::checkIndexesSame(const std::string& source, const std::string& dest)
 		throw std::string("Source and destination are the same");
 	}
 }
+
+/*Converts string coordinates to array indexes
+input: the string coordinates and the array to store the indexes
+output: none*/
 void Board::translateStringToIndexes(const std::string& str, int indexes[]) const
 {
 	indexes[ROW_INDEX] = str[1] - '1'; // row
 	indexes[COL_INDEX] = str[0] - 'a'; // column
 }
+
+/*Gets the board array
+input: none
+output: the board array*/
 ChessPiece*** Board::getBoard() const
 {
 	return _board;
 }
+
+/*Prints the board to the console
+input: none
+output: none*/
 void Board::printBoard() const
 {
 	int i = 0, j = 0;
@@ -157,15 +161,22 @@ void Board::printBoard() const
 	}
 	std::cout << "  a b c d e f g h\n";
 }
+
+/*Gets the piece at the specified indexes
+input: the row index and the column index
+output: the chess piece*/
 ChessPiece* Board::getPiece(int firstIndex, int secondIndex) const
 {
 	return _board[firstIndex][secondIndex];
 }
+
+/*Moves a piece from the source to the destination
+input: the source and destination coordinates
+output: none*/
 void Board::move(const std::string& source, const std::string& destination)
 {
 	int sourceArr[BOARD_INDEX_ARR_SIZE];
 	int destArr[BOARD_INDEX_ARR_SIZE];
-
 	translateStringToIndexes(source, sourceArr);
 	translateStringToIndexes(destination, destArr);
 
@@ -187,6 +198,9 @@ void Board::move(const std::string& source, const std::string& destination)
 	_turn = !_turn;
 }
 
+/*Checks if a move will result in a check on the current player
+input: the source and destination coordinates
+output: none*/
 void Board::checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::string& dest)
 {
 	int sourceArr[BOARD_INDEX_ARR_SIZE];
@@ -213,6 +227,9 @@ void Board::checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::s
 	move(destArr, sourceArr);
 }
 
+/*Checks if a move will result in a check on the opponent
+input: the source and destination coordinates
+output: true if the move causes a check, false otherwise*/
 bool Board::checkIfMakeCheckOnOtherPlayer(const std::string& source, const std::string& dest) const
 {
 	bool makeCheck = false;
@@ -235,7 +252,9 @@ bool Board::checkIfMakeCheckOnOtherPlayer(const std::string& source, const std::
 	return makeCheck;
 }
 
-
+/*Moves a piece using array indexes
+input: the source indexes array and the destination indexes array
+output: none*/
 void Board::move(int src[], int dest[])
 {
 	delete _board[dest[ROW_INDEX]][dest[COL_INDEX]];
