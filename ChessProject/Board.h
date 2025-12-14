@@ -15,6 +15,8 @@
 #define WHITE_ROW 0
 #define BLACK_PAWN_ROW 6
 #define WHITE_PAWN_ROW 1
+#define ROW_INDEX 0
+#define COL_INDEX 1
 enum PIECES_INDEXES { LEFT_ROOK, LEFT_KNIGHT, LEFT_BISHOP, KING, QUEEN, RIGHT_BISHOP, RIGHT_KNIGHT, RIGHT_ROOK };
 
 class ChessPiece;
@@ -25,18 +27,17 @@ public:
 	Board();
 	~Board();
 	void initPlayerSide(const std::string& color);
-	bool checkIfMakeCheck(const std::string& source, const std::string& dest);
-	bool CheckIfCauseCheck(const std::string& source, const std::string& dest);
-	bool checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color);
-	bool checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color);
-	bool checkIllegalIndexes(const std::string& dest);
-	bool checkIndexesSame(const std::string& source, const std::string& dest);
+	bool checkIfMakeCheck(const std::string& source, const std::string& dest) const;
+	bool CheckIfCauseCheck(const std::string& source, const std::string& dest) const;
+	bool checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color) const;
+	bool checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color) const;
+	bool checkIllegalIndexes(const std::string& dest) const;
+	bool checkIndexesSame(const std::string& source, const std::string& dest) const;
 	void move(const std::string& source, const std::string& destination);
-	void translateStringToIndexes(const std::string& str, int indexes[]);
-	ChessPiece*** getBoard();
-	void printBoard();
-	ChessPiece* getPiece(int firstIndex, int secondIndex);
-
+	void translateStringToIndexes(const std::string& str, int indexes[]) const;
+	ChessPiece*** getBoard() const;
+	void printBoard() const;
+	ChessPiece* getPiece(int firstIndex, int secondIndex) const;
 private:
 	ChessPiece*** _board; //a 2d array of pointer to chess pieces
 	bool _turn; //true: white, false: black

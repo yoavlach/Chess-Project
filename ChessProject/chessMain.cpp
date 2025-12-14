@@ -2,6 +2,6 @@
 int main()
 {
 	Board* board = new Board();
-	board->move("a0", "a2");
+	board->move("a1", "a2");
 	board->printBoard();
 }

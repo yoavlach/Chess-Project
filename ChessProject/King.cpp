@@ -9,7 +9,7 @@ King::~King()
 {
 }
 
-bool King::checkLegalMove(int source[], int destination[], Board board)
+bool King::checkLegalMove(int source[], int destination[], const Board& board)
 {
     bool isLegal = true;
 
@@ -27,14 +27,9 @@ bool King::checkLegalMove(int source[], int destination[], Board board)
         isLegal = false;//can not move more then one
     }
 
-    if (rowDiff == 0 && colDiff == 0)
-    {
-        isLegal = false;//can not stay in the same place 
-    }
-
     if (isLegal)
     {
-        ChessPiece* targetPiece = board.getPiece(destRow, destCol);//wating for getPiece to be added in baord.h 
+        ChessPiece* targetPiece = board.getPiece(destRow, destCol);
 
         //if there is a piece of the same color on destination then its illegal (if there is a piece from the outher color then its ok (the base for takeing)
         if (targetPiece != nullptr &&

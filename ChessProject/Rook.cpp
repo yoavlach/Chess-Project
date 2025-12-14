@@ -8,7 +8,7 @@ Rook::~Rook()
 {
 }
 
-bool Rook::checkLegalMove(int source[], int destination[], Board board)
+bool Rook::checkLegalMove(int source[], int destination[], const Board& board)
 {
     bool isLegal = true;
 
@@ -17,12 +17,6 @@ bool Rook::checkLegalMove(int source[], int destination[], Board board)
 
     int destRow = destination[0];
     int destCol = destination[1];
-
-    // cannot stay in the same place
-    if (srcRow == destRow && srcCol == destCol)
-    {
-        isLegal = false;
-    }
 
     int rowDiff = std::abs(srcRow - destRow);
     int colDiff = std::abs(srcCol - destCol);
@@ -56,7 +50,7 @@ bool Rook::checkLegalMove(int source[], int destination[], Board board)
                 for (int col = srcCol + 1; col < destCol; ++col)
                 {
                     // path must be empty
-                    if (board.getPiece(srcRow, col) != nullptr)
+                    if (board.getPiece(srcRow, col)->getType() != "empty")
                     {
                         isLegal = false;
                     }
@@ -98,8 +92,7 @@ bool Rook::checkLegalMove(int source[], int destination[], Board board)
         ChessPiece* targetPiece = board.getPiece(destRow, destCol);//wating for getPiece to be added in baord.h
 
         // cannot capture a piece of the same color
-        if (targetPiece != nullptr &&
-            targetPiece->getColor() == this->getColor())
+        if (targetPiece->getColor() == this->getColor())
         {
             isLegal = false;
         }

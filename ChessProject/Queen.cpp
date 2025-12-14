@@ -8,7 +8,7 @@ Queen::~Queen()
 {
 }
 
-bool Queen::checkLegalMove(int source[], int destination[], Board board)
+bool Queen::checkLegalMove(int source[], int destination[], const Board& board)
 {
     return false;
 }
