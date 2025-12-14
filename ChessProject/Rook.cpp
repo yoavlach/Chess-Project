@@ -8,10 +8,8 @@ Rook::~Rook()
 {
 }
 
-bool Rook::checkLegalMove(int source[], int destination[], const Board& board)
+void Rook::checkLegalMove(int source[], int destination[], const Board& board)
 {
-    bool isLegal = true;
-
     int srcRow = source[0];
     int srcCol = source[1];
 
@@ -24,79 +22,152 @@ bool Rook::checkLegalMove(int source[], int destination[], const Board& board)
     // rook can move only in straight lines (row OR column)
     if (rowDiff != 0 && colDiff != 0)
     {
-        isLegal = false;
+        throw std::string("Piece can't move that way");
     }
-
-    if (isLegal)
+    // horizontal move
+    if (rowDiff == 0)
     {
-        // horizontal move
-        if (rowDiff == 0)
+        // moving left
+        if (destCol < srcCol)
         {
-            // moving left
-            if (destCol < srcCol)
+            for (int col = destCol + 1; col < srcCol; ++col)
             {
-                for (int col = destCol + 1; col < srcCol; ++col)
+                // path must be empty
+                if (board.getPiece(srcRow, col)->getColor() != "empty" && col != destCol && board.getPiece(srcRow, col)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
                 {
-                    // path must be empty
-                    if (board.getPiece(srcRow, col) != nullptr)
-                    {
-                        isLegal = false;
-                    }
-                }
-            }
-            // moving right
-            else
-            {
-                for (int col = srcCol + 1; col < destCol; ++col)
-                {
-                    // path must be empty
-                    if (board.getPiece(srcRow, col)->getType() != "empty")
-                    {
-                        isLegal = false;
-                    }
+                    throw std::string("Piece can't move that way");
                 }
             }
         }
-        // vertical move
+        // moving right
         else
         {
-            // moving down
-            if (destRow > srcRow)
+            for (int col = srcCol + 1; col < destCol; ++col)
             {
-                for (int row = srcRow + 1; row < destRow; ++row)
+                // path must be empty
+                if (board.getPiece(srcRow, col)->getType() != "empty" && col != destCol && board.getPiece(srcRow, col)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
                 {
-                    // path must be empty
-                    if (board.getPiece(row, srcCol) != nullptr)
-                    {
-                        isLegal = false;
-                    }
-                }
-            }
-            // moving up
-            else
-            {
-                for (int row = destRow + 1; row < srcRow; ++row)
-                {
-                    // path must be empty
-                    if (board.getPiece(row, srcCol) != nullptr)
-                    {
-                        isLegal = false;
-                    }
+                    throw std::string("Piece can't move that way");
                 }
             }
         }
     }
-
-    if (isLegal)
+    // vertical move
+    else
     {
-        ChessPiece* targetPiece = board.getPiece(destRow, destCol);//wating for getPiece to be added in baord.h
-
-        // cannot capture a piece of the same color
-        if (targetPiece->getColor() == this->getColor())
+        // moving down
+        if (destRow > srcRow)
         {
-            isLegal = false;
+            for (int row = srcRow + 1; row < destRow; ++row)
+            {
+                // path must be empty
+                if (board.getPiece(row, srcCol)->getType() != "empty" && row != destRow && board.getPiece(row, srcCol)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
+                {
+                    throw std::string("Piece can't move that way");
+                }
+            }
+        }
+        // moving up
+        else
+        {
+            for (int row = destRow + 1; row < srcRow; ++row)
+            {
+                // path must be empty
+                if (board.getPiece(row, srcCol)->getType() != "empty" && row != destRow && board.getPiece(row, srcCol)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
+                {
+                    throw std::string("Piece can't move that way");
+                }
+            }
         }
     }
+    ChessPiece* targetPiece = board.getPiece(destRow, destCol);
+}
 
-    return isLegal;
+bool Rook::checkMakeCheck(int source[], const Board& board)
+{
+    int srcRow = source[ROW_INDEX];
+    int srcCol = source[COL_INDEX];
+    std::string currColor = board.getPiece(srcRow, srcCol)->getColor();
+    bool makeCheck = false;
+    bool blocked = false;
+    for (int j = srcCol + 1; j < ROWS_AND_COLS && !makeCheck; j++)
+    {
+        if (!blocked)
+        {
+            std::string type = board.getPiece(srcRow, j)->getType();
+            std::string color = board.getPiece(srcRow, j)->getColor();
+            if (type != "empty")
+            {
+                if (type == "king" && color != currColor)
+                {
+                    makeCheck = true;
+                }
+                else
+                {
+                    blocked = true;
+                }
+            }
+        }
+    }
+    blocked = false;
+    for (int j = srcCol - 1; j >= 0 && !makeCheck; j--)
+    {
+        if (!blocked)
+        {
+            std::string type = board.getPiece(srcRow, j)->getType();
+            std::string color = board.getPiece(srcRow, j)->getColor();
+            if (type != "empty")
+            {
+                if (type == "king" && color != currColor)
+                {
+                    makeCheck = true;
+                }
+                else
+                {
+                    blocked = true;
+                }
+            }
+        }
+    }
+    blocked = false;
+    for (int i = srcRow - 1; i >= 0 && !makeCheck; i--)
+    {
+        if (!blocked)
+        {
+            std::string type = board.getPiece(i, srcCol)->getType();
+            std::string color = board.getPiece(i, srcCol)->getColor();
+            if (type != "empty")
+            {
+                if (type == "king" && color != currColor)
+                {
+                    makeCheck = true;
+                }
+                else
+                {
+                    blocked = true;
+                }
+            }
+        }
+    }
+    blocked = false;
+    for (int i = srcRow + 1; i < ROWS_AND_COLS && !makeCheck; i++)
+    {
+        if (!blocked)
+        {
+            std::string type = board.getPiece(i, srcCol)->getType();
+            std::string color = board.getPiece(i, srcCol)->getColor();
+            if (type != "empty")
+            {
+                if (type == "king" && color != currColor)
+                {
+                    makeCheck = true;
+                }
+                else
+                {
+                    blocked = true;
+                }
+            }
+        }
+    }
+    return makeCheck;
 }

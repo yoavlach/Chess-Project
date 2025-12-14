@@ -8,7 +8,11 @@ Pawn::~Pawn()
 {
 }
 
-bool Pawn::checkLegalMove(int source[], int destination[], const Board& board)
+void Pawn::checkLegalMove(int source[], int destination[], const Board& board)
+{ //empty for now
+}
+
+bool Pawn::checkMakeCheck(int source[], const Board& board)
 {
-    return false;
+    return false; //for now
 }

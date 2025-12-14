@@ -8,7 +8,10 @@ Queen::~Queen()
 {
 }
 
-bool Queen::checkLegalMove(int source[], int destination[], const Board& board)
+void Queen::checkLegalMove(int source[], int destination[], const Board& board)
+{ //empty for now
+}
+bool Queen::checkMakeCheck(int source[], const Board& board)
 {
-    return false;
+    return false; //for now
 }

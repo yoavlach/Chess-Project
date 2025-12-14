@@ -8,7 +8,11 @@ Knight::~Knight()
 {
 }
 
-bool Knight::checkLegalMove(int source[], int destination[], const Board& board)
+void Knight::checkLegalMove(int source[], int destination[], const Board& board)
+{ //empty for now
+}
+
+bool Knight::checkMakeCheck(int source[], const Board& board)
 {
-    return false;
+    return false; //for now
 }

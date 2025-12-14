@@ -9,10 +9,8 @@ King::~King()
 {
 }
 
-bool King::checkLegalMove(int source[], int destination[], const Board& board)
+void King::checkLegalMove(int source[], int destination[], const Board& board)
 {
-    bool isLegal = true;
-
     int srcRow = source[0];
     int srcCol = source[1];
 
@@ -24,20 +22,24 @@ bool King::checkLegalMove(int source[], int destination[], const Board& board)
 
     if (rowDiff > 1 || colDiff > 1)
     {
-        isLegal = false;//can not move more then one
+        throw std::string("Piece can't move that way");
     }
 
-    if (isLegal)
-    {
-        ChessPiece* targetPiece = board.getPiece(destRow, destCol);
+    ChessPiece* targetPiece = board.getPiece(destRow, destCol);
+}
 
-        //if there is a piece of the same color on destination then its illegal (if there is a piece from the outher color then its ok (the base for takeing)
-        if (targetPiece != nullptr &&
-            targetPiece->getColor() == this->getColor())
-        {
-            isLegal = false;
-        }
-    }
-
-    return isLegal;
+bool King::checkMakeCheck(int source[], const Board& board)
+{
+    int srcRow = source[ROW_INDEX];
+    int srcCol = source[COL_INDEX];
+    std::string sourceColor = board.getPiece(srcRow, srcCol)->getColor();
+    // for each check we are checking if the indexes we check are in range and if there is a king of the opposite color there
+    return (srcRow + 1 < ROWS_AND_COLS && board.getPiece(srcRow + 1, srcCol)->getType() == "king" && board.getPiece(srcRow + 1, srcCol)->getColor() != sourceColor) || // up
+        (srcRow + 1 < ROWS_AND_COLS && srcCol + 1 < ROWS_AND_COLS && board.getPiece(srcRow + 1, srcCol + 1)->getType() == "king" && board.getPiece(srcRow + 1, srcCol + 1)->getColor() != sourceColor) || // up-right
+        (srcCol + 1 < ROWS_AND_COLS && board.getPiece(srcRow, srcCol + 1)->getType() == "king" && board.getPiece(srcRow, srcCol + 1)->getColor() != sourceColor) || // right
+        (srcRow - 1 >= 0 && srcCol + 1 < ROWS_AND_COLS && board.getPiece(srcRow - 1, srcCol + 1)->getType() == "king" && board.getPiece(srcRow - 1, srcCol + 1)->getColor() != sourceColor) || // down-right
+        (srcRow - 1 >= 0 && board.getPiece(srcRow - 1, srcCol)->getType() == "king" && board.getPiece(srcRow - 1, srcCol)->getColor() != sourceColor) || // down
+        (srcRow - 1 >= 0 && srcCol - 1 >= 0 && board.getPiece(srcRow - 1, srcCol - 1)->getType() == "king" && board.getPiece(srcRow - 1, srcCol - 1)->getColor() != sourceColor) || // down-left
+        (srcCol - 1 >= 0 && board.getPiece(srcRow, srcCol - 1)->getType() == "king" && board.getPiece(srcRow, srcCol - 1)->getColor() != sourceColor) || // left
+        (srcRow + 1 < ROWS_AND_COLS && srcCol - 1 >= 0 && board.getPiece(srcRow + 1, srcCol - 1)->getType() == "king" && board.getPiece(srcRow + 1, srcCol - 1)->getColor() != sourceColor); // up-left
 }

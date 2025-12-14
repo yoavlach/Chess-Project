@@ -6,6 +6,7 @@ class EmptyChessPiece : public ChessPiece
 {
 public:
     EmptyChessPiece(const std::string& type, const std::string& color);
-    virtual bool checkLegalMove(int source[], int destination[], const Board& board) override;
+    virtual void checkLegalMove(int source[], int destination[], const Board& board) override;
+    virtual bool checkMakeCheck(int source[], const Board& board) override;
     virtual ~EmptyChessPiece();
 };

@@ -8,7 +8,11 @@ Bishop::~Bishop()
 {
 }
 
-bool Bishop::checkLegalMove(int source[], int destination[], const Board& board)
+void Bishop::checkLegalMove(int source[], int destination[], const Board& board)
+{ //empty for now
+}
+
+bool Bishop::checkMakeCheck(int source[], const Board& board)
 {
-    return false;
+	return false; //for now
 }

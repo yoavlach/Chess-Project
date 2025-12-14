@@ -8,7 +8,10 @@ EmptyChessPiece::~EmptyChessPiece()
 {
 }
 
-bool EmptyChessPiece::checkLegalMove(int source[], int destination[], const Board& board)
+void EmptyChessPiece::checkLegalMove(int source[], int destination[], const Board& board)
+{ //empty for now
+}
+bool EmptyChessPiece::checkMakeCheck(int source[], const Board& board)
 {
-    return false;
+	return false; //for now
 }
