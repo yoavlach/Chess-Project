@@ -72,8 +72,10 @@ void Board::checkIfPlayerOfSameColorInDest(const std::string& dest, const std::s
 	translateStringToIndexes(dest, destArr);
 	if (_board[destArr[ROW_INDEX]][destArr[COL_INDEX]]->getColor() == color)
 	{
+		delete[] destArr;
 		throw std::string("Piece in destination belongs to current player");
 	}
+	delete[] destArr;
 }
 
 /*Checks if the piece at the source belongs to the current player
@@ -85,8 +87,10 @@ void Board::checkIfPlayerOfSameColorInSource(const std::string& source, const st
 	translateStringToIndexes(source, srcArr);
 	if (_board[srcArr[ROW_INDEX]][srcArr[COL_INDEX]]->getColor() != color)
 	{
+		delete[] srcArr;
 		throw std::string("Piece in source doesn't belong to current player");
 	}
+	delete[] srcArr;
 }
 
 /*Checks if the destination coordinates are valid
@@ -99,8 +103,10 @@ void Board::checkIllegalIndexes(const std::string& dest) const
 	if (!(destArr[ROW_INDEX] >= 0 && destArr[ROW_INDEX] < ROWS_AND_COLS &&
 		destArr[COL_INDEX] >= 0 && destArr[COL_INDEX] < ROWS_AND_COLS))
 	{
+		delete[] destArr;
 		throw std::string("Illegal indexes");
 	}
+	delete[] destArr;
 }
 
 /*Checks if the source and destination coordinates are the same
@@ -205,26 +211,41 @@ void Board::checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::s
 {
 	int sourceArr[BOARD_INDEX_ARR_SIZE];
 	int destArr[BOARD_INDEX_ARR_SIZE];
+	int attackerPos[BOARD_INDEX_ARR_SIZE];
 	translateStringToIndexes(source, sourceArr);
 	translateStringToIndexes(dest, destArr);
+
+	ChessPiece* movingPiece = _board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]];
+	ChessPiece* capturedPiece = _board[destArr[ROW_INDEX]][destArr[COL_INDEX]];
+
+	_board[destArr[ROW_INDEX]][destArr[COL_INDEX]] = movingPiece;
+	_board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]] = new EmptyChessPiece("empty", "empty");
+
 	std::string currPlayerColor = _turn ? "white" : "black";
+	bool isCheck = false;
 	int i = 0, j = 0;
-	int attackerPos[BOARD_INDEX_ARR_SIZE] = { 0 };
-	move(sourceArr, destArr);
-	for (i = 0; i < ROWS_AND_COLS; i++)
+
+	for (i = 0; i < ROWS_AND_COLS && !isCheck; i++)
 	{
-		for (j = 0; j < ROWS_AND_COLS; j++)
+		for (j = 0; j < ROWS_AND_COLS && !isCheck; j++)
 		{
 			attackerPos[ROW_INDEX] = i;
 			attackerPos[COL_INDEX] = j;
 			if (_board[i][j]->getColor() == (currPlayerColor == "white" ? "black" : "white") && _board[i][j]->checkMakeCheck(attackerPos, *this))
 			{
-				move(destArr, sourceArr);
-				throw std::string("This move makes a check on the current player");
+				isCheck = true;
 			}
 		}
 	}
-	move(destArr, sourceArr);
+
+	delete _board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]];
+	_board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]] = movingPiece;
+	_board[destArr[ROW_INDEX]][destArr[COL_INDEX]] = capturedPiece;
+
+	if (isCheck)
+	{
+		throw std::string("This move makes a check on the current player");
+	}
 }
 
 /*Checks if a move will result in a check on the opponent
@@ -233,9 +254,9 @@ output: true if the move causes a check, false otherwise*/
 bool Board::checkIfMakeCheckOnOtherPlayer(const std::string& source, const std::string& dest) const
 {
 	bool makeCheck = false;
-	int sourceArr[BOARD_INDEX_ARR_SIZE];
-	int destArr[BOARD_INDEX_ARR_SIZE];
-	int attackerPos[BOARD_INDEX_ARR_SIZE] = { 0 };
+	int* sourceArr = new int[BOARD_INDEX_ARR_SIZE];
+	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
+	int* attackerPos = new int[BOARD_INDEX_ARR_SIZE];
 	translateStringToIndexes(source, sourceArr);
 	translateStringToIndexes(dest, destArr);
 	std::string currPlayerColor = _turn ? "white" : "black";
@@ -249,6 +270,9 @@ bool Board::checkIfMakeCheckOnOtherPlayer(const std::string& source, const std::
 			makeCheck = _board[i][j]->getColor() == currPlayerColor && _board[i][j]->checkMakeCheck(attackerPos, *this);
 		}
 	}
+	delete[] sourceArr;
+	delete[] destArr;
+	delete[] attackerPos;
 	return makeCheck;
 }
 

@@ -33,8 +33,6 @@ void King::checkLegalMove(int source[], int destination[], const Board& board)
     {
         throw std::string("Piece can't move that way");
     }
-
-    ChessPiece* targetPiece = board.getPiece(destRow, destCol);
 }
 
 /*Checks if the king is checking the enemy king
@@ -42,16 +40,32 @@ input: the source coordinates and the board
 output: true if the king is checking the king, false otherwise*/
 bool King::checkMakeCheck(int source[], const Board& board)
 {
-    int srcRow = source[ROW_INDEX];
-    int srcCol = source[COL_INDEX];
-    std::string sourceColor = board.getPiece(srcRow, srcCol)->getColor();
-    // for each check we are checking if the indexes we check are in range and if there is a king of the opposite color there
-    return (srcRow + 1 < ROWS_AND_COLS && board.getPiece(srcRow + 1, srcCol)->getType() == "king" && board.getPiece(srcRow + 1, srcCol)->getColor() != sourceColor) || // up
-        (srcRow + 1 < ROWS_AND_COLS && srcCol + 1 < ROWS_AND_COLS && board.getPiece(srcRow + 1, srcCol + 1)->getType() == "king" && board.getPiece(srcRow + 1, srcCol + 1)->getColor() != sourceColor) || // up-right
-        (srcCol + 1 < ROWS_AND_COLS && board.getPiece(srcRow, srcCol + 1)->getType() == "king" && board.getPiece(srcRow, srcCol + 1)->getColor() != sourceColor) || // right
-        (srcRow - 1 >= 0 && srcCol + 1 < ROWS_AND_COLS && board.getPiece(srcRow - 1, srcCol + 1)->getType() == "king" && board.getPiece(srcRow - 1, srcCol + 1)->getColor() != sourceColor) || // down-right
-        (srcRow - 1 >= 0 && board.getPiece(srcRow - 1, srcCol)->getType() == "king" && board.getPiece(srcRow - 1, srcCol)->getColor() != sourceColor) || // down
-        (srcRow - 1 >= 0 && srcCol - 1 >= 0 && board.getPiece(srcRow - 1, srcCol - 1)->getType() == "king" && board.getPiece(srcRow - 1, srcCol - 1)->getColor() != sourceColor) || // down-left
-        (srcCol - 1 >= 0 && board.getPiece(srcRow, srcCol - 1)->getType() == "king" && board.getPiece(srcRow, srcCol - 1)->getColor() != sourceColor) || // left
-        (srcRow + 1 < ROWS_AND_COLS && srcCol - 1 >= 0 && board.getPiece(srcRow + 1, srcCol - 1)->getType() == "king" && board.getPiece(srcRow + 1, srcCol - 1)->getColor() != sourceColor); // up-left
+        int srcRow = source[ROW_INDEX];
+        int srcCol = source[COL_INDEX];
+        int checkRow = 0;
+        int checkCol = 0;
+        bool makeCheck = false;
+        std::string sourceColor = board.getPiece(srcRow, srcCol)->getColor();
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (i != 0 || j != 0)
+                {
+                    checkRow = srcRow + i;
+                    checkCol = srcCol + j;
+                    if (checkRow >= 0 && checkRow < ROWS_AND_COLS &&
+                        checkCol >= 0 && checkCol < ROWS_AND_COLS)
+                    {
+                        ChessPiece* piece = board.getPiece(checkRow, checkCol);
+                        if (piece->getType() == "king" && piece->getColor() != sourceColor)
+                        {
+                            makeCheck = true;
+                        }
+                    }
+                }
+
+            }
+        }
+        return makeCheck;
 }

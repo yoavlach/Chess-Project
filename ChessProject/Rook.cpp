@@ -19,11 +19,11 @@ input: the source coordinates, the destination coordinates and the board
 output: none*/
 void Rook::checkLegalMove(int source[], int destination[], const Board& board)
 {
-    int srcRow = source[0];
-    int srcCol = source[1];
+    int srcRow = source[ROW_INDEX];
+    int srcCol = source[COL_INDEX];
 
-    int destRow = destination[0];
-    int destCol = destination[1];
+    int destRow = destination[ROW_INDEX];
+    int destCol = destination[COL_INDEX];
 
     int rowDiff = std::abs(srcRow - destRow);
     int colDiff = std::abs(srcCol - destCol);
@@ -34,15 +34,17 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
         throw std::string("Piece can't move that way");
     }
     // horizontal move
+// horizontal move
     if (rowDiff == 0)
     {
         // moving left
         if (destCol < srcCol)
         {
+            // Iterate strictly between source and dest
             for (int col = destCol + 1; col < srcCol; ++col)
             {
-                // path must be empty
-                if (board.getPiece(srcRow, col)->getColor() != "empty" && col != destCol && board.getPiece(srcRow, col)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
+                // If ANY piece is here, the path is blocked
+                if (board.getPiece(srcRow, col)->getType() != "empty")
                 {
                     throw std::string("Piece can't move that way");
                 }
@@ -53,8 +55,7 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
         {
             for (int col = srcCol + 1; col < destCol; ++col)
             {
-                // path must be empty
-                if (board.getPiece(srcRow, col)->getType() != "empty" && col != destCol && board.getPiece(srcRow, col)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
+                if (board.getPiece(srcRow, col)->getType() != "empty")
                 {
                     throw std::string("Piece can't move that way");
                 }
@@ -69,8 +70,7 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
         {
             for (int row = srcRow + 1; row < destRow; ++row)
             {
-                // path must be empty
-                if (board.getPiece(row, srcCol)->getType() != "empty" && row != destRow && board.getPiece(row, srcCol)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
+                if (board.getPiece(row, srcCol)->getType() != "empty")
                 {
                     throw std::string("Piece can't move that way");
                 }
@@ -81,15 +81,13 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
         {
             for (int row = destRow + 1; row < srcRow; ++row)
             {
-                // path must be empty
-                if (board.getPiece(row, srcCol)->getType() != "empty" && row != destRow && board.getPiece(row, srcCol)->getColor() != board.getPiece(srcRow, srcCol)->getColor())
+                if (board.getPiece(row, srcCol)->getType() != "empty")
                 {
                     throw std::string("Piece can't move that way");
                 }
             }
         }
     }
-    ChessPiece* targetPiece = board.getPiece(destRow, destCol);
 }
 
 /*Checks if the rook is checking the enemy king
