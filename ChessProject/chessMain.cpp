@@ -4,6 +4,135 @@
 
 using namespace std;
 
+void tryMove(Board& board, string source, string dest);
+void play(Board& board);
+
+int main()
+{
+	Board board;
+	cout << "Original board:\n";
+	board.printBoard();
+	while (true)
+	{
+		play(board);
+	}
+	cout << "\n";
+
+	/* White pawn tries to stay in place – exception expected */
+	tryMove(board, "e2", "e2");
+	cout << "\n";
+
+	/* White pawn tries to move three squares forward – exception expected */
+	tryMove(board, "e2", "e5");
+	cout << "\n";
+
+	/* White pawn tries to move diagonally without capture – exception expected */
+	tryMove(board, "e2", "d3");
+	cout << "\n";
+
+	/* Rook tries to jump over pawn – exception expected */
+	tryMove(board, "a1", "a3");
+	cout << "\n";
+
+	/* Rook tries diagonal move – exception expected */
+	tryMove(board, "a1", "b2");
+	cout << "\n";
+
+	/* Knight tries illegal straight move – exception expected */
+	tryMove(board, "b1", "b3");
+	cout << "\n";
+
+	/* Knight tries illegal horizontal move – exception expected */
+	tryMove(board, "b1", "c1");
+	cout << "\n";
+
+	/* Bishop tries non-diagonal move – exception expected */
+	tryMove(board, "c1", "c3");
+	cout << "\n";
+
+	/* Bishop tries diagonal but blocked by pawn – exception expected */
+	tryMove(board, "f1", "b5");
+	cout << "\n";
+
+	/* King tries to move two squares – exception expected */
+	tryMove(board, "e1", "e3");
+	cout << "\n";
+
+	/* King tries to move onto own piece – exception expected */
+	tryMove(board, "e1", "f1");
+	cout << "\n";
+
+	/* Legal white pawn move – no exception expected */
+	tryMove(board, "e2", "e4");
+	board.printBoard();
+	cout << "\n";
+
+	/* Legal black pawn move – no exception expected */
+	tryMove(board, "e7", "e6");
+	board.printBoard();
+	cout << "\n";
+
+	/* White pawn tries illegal capture (empty diagonal) – exception expected */
+	tryMove(board, "a2", "b3");
+	cout << "\n";
+
+	/* Legal knight move – no exception expected */
+	tryMove(board, "g1", "f3");
+	board.printBoard();
+	cout << "\n";
+
+	/* Legal bishop move – no exception expected */
+	tryMove(board, "c1", "f4");
+	board.printBoard();
+	cout << "\n";
+
+	/* Legal rook move – no exception expected */
+	tryMove(board, "h1", "h3");
+	board.printBoard();
+	cout << "\n";
+
+	/* Legal king move – no exception expected */
+	tryMove(board, "e1", "e2");
+	board.printBoard();
+	cout << "\n";
+
+	/* Knight moves causing check – no exception expected */
+	tryMove(board, "b8", "c6");
+	tryMove(board, "f3", "g5"); // filler white move
+	tryMove(board, "c6", "d4");
+	board.printBoard();
+	cout << "\n";
+
+	/* White tries to move a pawn – no exception expected */
+	tryMove(board, "b2", "b3");
+	board.printBoard();
+	cout << "\n";
+
+	/* Attempt to move from empty square – exception expected */
+	tryMove(board, "d4", "d5");
+	cout << "\n";
+
+	/* Queen illegal move – moving like a knight – exception expected */
+	tryMove(board, "d1", "e3");
+	cout << "\n";
+
+	/* Queen illegal move – blocked by pawn – exception expected */
+	tryMove(board, "d1", "d5");
+	cout << "\n";
+
+	/* Queen legal move – diagonally after pawn moved – no exception expected */
+	tryMove(board, "d1", "h5");
+	board.printBoard();
+	cout << "\n";
+
+	/* Queen legal move – straight after pawn moved – no exception expected */
+	tryMove(board, "d1", "d3");
+	board.printBoard();
+	cout << "\n";
+
+	return 0;
+}
+
 /*Attempts to move a piece and handles any exceptions
 input: the board, the source coordinates and the destination coordinates
 output: none*/
@@ -20,56 +149,22 @@ void tryMove(Board& board, string source, string dest)
 	}
 }
 
-int main()
+/*Gets move input from the user in the form "a2a4"
+and performs the move
+input: the board
+output: none*/
+void play(Board& board)
 {
-	Board board;
-	std::cout << "Original board:\n";
+	string input;
+	cin >> input;
+	string source = "";
+	string dest = "";
+
+	source += input[0];
+	source += input[1];
+	dest += input[2];
+	dest += input[3];
+
+	tryMove(board, source, dest);
 	board.printBoard();
-	std::cout << "\n";
-
-	// white rook moves forward
-	// valid move no exception expected
-	tryMove(board, "a1", "a5");
-	board.printBoard();
-	std::cout << "\n";
-
-	// black tries to move on white turn
-	// should throw exception piece in source doesn't belong to current player
-	tryMove(board, "h1", "h3");
-	std::cout << "\n";
-
-	// black rook moves forward
-	// valid move no exception expected
-	tryMove(board, "h8", "h5");
-	board.printBoard();
-	std::cout << "\n";
-
-	// white rook tries to move diagonal
-	// should throw exception piece can't move that way
-	tryMove(board, "a5", "b6");
-	std::cout << "\n";
-
-	// white king moves forward
-	// valid move no exception expected
-	tryMove(board, "e1", "e2");
-	board.printBoard();
-	std::cout << "\n";
-
-	// black rook checks white king
-	// valid move no exception expected
-	tryMove(board, "h5", "e5");
-	board.printBoard();
-	std::cout << "\n";
-
-	// white tries to ignore check
-	// should throw exception this move makes a check on the current player
-	tryMove(board, "a5", "a6");
-	std::cout << "\n";
-
-	// white rook captures the checking rook
-	// valid move no exception expected (FIXED: using rook at a5 instead of king)
-	tryMove(board, "a5", "e5");
-	board.printBoard();
-
-	return 0;
 }

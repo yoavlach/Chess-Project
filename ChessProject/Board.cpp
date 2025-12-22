@@ -11,7 +11,7 @@ Board::Board()
 	{
 		_board[i] = new ChessPiece * [ROWS_AND_COLS];
 	}
-	for (int i = 0; i < ROWS_AND_COLS; i++)
+	for (int i = WHITE_PAWN_ROW + 1; i < BLACK_PAWN_ROW; i++)
 	{
 		for (int j = 0; j < ROWS_AND_COLS; j++)
 		{
@@ -32,31 +32,18 @@ void Board::initPlayerSide(const std::string& color)
 	int row = color == "white" ? WHITE_ROW : BLACK_ROW;
 	int pawnRow = color == "white" ? WHITE_PAWN_ROW : BLACK_PAWN_ROW;
 	int i = 0;
-	delete _board[row][LEFT_ROOK];
 	_board[row][LEFT_ROOK] = new Rook("rook", color);
-
-	delete _board[row][LEFT_KNIGHT];
 	_board[row][LEFT_KNIGHT] = new Knight("knight", color);
-
-	 delete _board[row][LEFT_BISHOP];
 	_board[row][LEFT_BISHOP] = new Bishop("bishop", color);
-
-	delete _board[row][KING];
 	_board[row][KING] = new King("king", color);
-	//_board[row][QUEEN] = new Queen("queen", color);
-
-	delete _board[row][RIGHT_BISHOP];
+	_board[row][QUEEN] = new Queen("queen", color);
 	_board[row][RIGHT_BISHOP] = new Bishop("bishop", color);
-
-	delete _board[row][RIGHT_KNIGHT];
 	_board[row][RIGHT_KNIGHT] = new Knight("knight", color);
-
-	delete _board[row][RIGHT_ROOK];
 	_board[row][RIGHT_ROOK] = new Rook("rook", color);
-	//for (i = 0; i < ROWS_AND_COLS; i++)
-	//{
-	//	_board[pawnRow][i] = new Pawn("pawn", color);
-	//}
+	for (i = 0; i < ROWS_AND_COLS; i++)
+	{
+		_board[pawnRow][i] = new Pawn("pawn", color);
+	}
 }
 
 /*Clears the board
@@ -191,6 +178,7 @@ input: the source and destination coordinates
 output: none*/
 void Board::move(const std::string& source, const std::string& destination)
 {
+	std::cout << "Curr turn: " << (_turn ? "white" : "black") << "\n";
 	int sourceArr[BOARD_INDEX_ARR_SIZE];
 	int destArr[BOARD_INDEX_ARR_SIZE];
 	translateStringToIndexes(source, sourceArr);

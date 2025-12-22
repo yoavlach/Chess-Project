@@ -36,9 +36,9 @@ void Bishop::checkLegalMove(int source[], int destination[], const Board& board)
         throw std::string("Piece can't move that way");
     }
     //up
-    if (rowDiff > 0)
+    if (srcRow - destRow < 0)
     {
-        for (; row < destRow; row++)
+        for (row = row + 1; row < destRow; row++)
         {
             if (board.getPiece(row, col)->getType() != "empty")
             {
@@ -57,7 +57,7 @@ void Bishop::checkLegalMove(int source[], int destination[], const Board& board)
     //down
     else
     {
-        for (; row > destRow; row--)
+        for (row = row - 1; row > destRow; row--)
         {
             if (board.getPiece(row, col)->getType() != "empty")
             {
