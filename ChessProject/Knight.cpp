@@ -1,4 +1,5 @@
 #include "Knight.h"
+#include <cmath>
 
 /*Initializes a knight
 input: the knight's type and color
@@ -7,24 +8,64 @@ Knight::Knight(const std::string& type, const std::string& color) : ChessPiece(c
 {
 }
 
-/*Clears a knight
-input: none
-output: none*/
+/*Clears a knight*/
 Knight::~Knight()
 {
 }
 
 /*Checks if a move is legal for a knight
-input: the source coordinates, the destination coordinates and the board
-output: none*/
+A Knight move is legal if it moves in an L-shape (2x1 or 1x2).
+Unlike the Rook, we do NOT check if the path is blocked.*/
 void Knight::checkLegalMove(int source[], int destination[], const Board& board)
-{ //empty for now
+{
+    int srcRow = source[ROW_INDEX];
+    int srcCol = source[COL_INDEX];
+
+    int destRow = destination[ROW_INDEX];
+    int destCol = destination[COL_INDEX];
+
+    int rowDiff = std::abs(srcRow - destRow);
+    int colDiff = std::abs(srcCol - destCol);
+
+    bool isLShape = (rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2);
+
+    if (!isLShape)
+    {
+        throw std::string("Piece can't move that way");
+    }
+
 }
 
 /*Checks if the knight is checking the enemy king
-input: the source coordinates and the board
-output: true if the knight is checking the king, false otherwise*/
+We check the 8 specific squares a knight can attack.*/
 bool Knight::checkMakeCheck(int source[], const Board& board)
 {
-    return false; //for now
+    int srcRow = source[ROW_INDEX];
+    int srcCol = source[COL_INDEX];
+    std::string currColor = board.getPiece(srcRow, srcCol)->getColor();
+    bool makeCheck = false;
+
+    int rowOffsets[] = { -2, -2, -1, -1,  1, 1,  2, 2 };
+    int colOffsets[] = { -1,  1, -2,  2, -2, 2, -1, 1 };
+
+
+
+    for (int i = 0; i < ROWS_AND_COLS && !makeCheck; i++)
+    {
+        int targetRow = srcRow + rowOffsets[i];
+        int targetCol = srcCol + colOffsets[i];
+
+        if (targetRow >= 0 && targetRow < ROWS_AND_COLS && targetCol >= 0 && targetCol < ROWS_AND_COLS)
+        {
+            std::string type = board.getPiece(targetRow, targetCol)->getType();
+            std::string color = board.getPiece(targetRow, targetCol)->getColor();
+
+            if (type == "king" && color != currColor)
+            {
+                makeCheck = true;
+            }
+        }
+    }
+
+    return makeCheck;
 }

@@ -2,6 +2,8 @@
 #include "ChessPiece.h"
 #include "Board.h"
 
+enum CHECK_NUMS { UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT };
+
 class Bishop : public ChessPiece
 {
 public:

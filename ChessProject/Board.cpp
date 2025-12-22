@@ -34,13 +34,23 @@ void Board::initPlayerSide(const std::string& color)
 	int i = 0;
 	delete _board[row][LEFT_ROOK];
 	_board[row][LEFT_ROOK] = new Rook("rook", color);
-	//_board[row][LEFT_KNIGHT] = new Knight("knight", color);
-	//_board[row][LEFT_BISHOP] = new Bishop("bishop", color);
+
+	delete _board[row][LEFT_KNIGHT];
+	_board[row][LEFT_KNIGHT] = new Knight("knight", color);
+
+	 delete _board[row][LEFT_BISHOP];
+	_board[row][LEFT_BISHOP] = new Bishop("bishop", color);
+
 	delete _board[row][KING];
 	_board[row][KING] = new King("king", color);
 	//_board[row][QUEEN] = new Queen("queen", color);
-	//_board[row][RIGHT_BISHOP] = new Bishop("bishop", color);
-	//_board[row][RIGHT_KNIGHT] = new Knight("knight", color);
+
+	delete _board[row][RIGHT_BISHOP];
+	_board[row][RIGHT_BISHOP] = new Bishop("bishop", color);
+
+	delete _board[row][RIGHT_KNIGHT];
+	_board[row][RIGHT_KNIGHT] = new Knight("knight", color);
+
 	delete _board[row][RIGHT_ROOK];
 	_board[row][RIGHT_ROOK] = new Rook("rook", color);
 	//for (i = 0; i < ROWS_AND_COLS; i++)
