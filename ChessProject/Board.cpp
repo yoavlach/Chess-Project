@@ -157,6 +157,10 @@ void Board::printBoard() const
 				{
 					c = c - 32;
 				}
+				if (piece->getType() == "knight")
+				{
+					c = piece->getColor() == "white" ? 'N' : 'n';
+				}
 				std::cout << c << " ";
 			}
 		}
