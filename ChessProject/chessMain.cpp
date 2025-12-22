@@ -12,10 +12,10 @@ int main()
 	Board board;
 	cout << "Original board:\n";
 	board.printBoard();
-	while (true)
-	{
-		play(board);
-	}
+	//while (true)
+	//{
+	//	play(board);
+	//}
 	cout << "\n";
 
 	/* White pawn tries to stay in place – exception expected */
@@ -139,14 +139,7 @@ output: none*/
 void tryMove(Board& board, string source, string dest)
 {
 	cout << "Move " << source << " to " << dest << "\n";
-	try
-	{
-		board.move(source, dest);
-	}
-	catch (const string& e)
-	{
-		cout << e << endl;
-	}
+	std::cout << board.move(source, dest) << "\n";
 }
 
 /*Gets move input from the user in the form "a2a4"

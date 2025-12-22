@@ -18,8 +18,9 @@ Queen::~Queen()
 /*Checks if a move is legal for a queen
 input: the source coordinates, the destination coordinates and the board
 output: none*/
-void Queen::checkLegalMove(int source[], int destination[], const Board& board)
+bool Queen::checkLegalMove(int source[], int destination[], const Board& board)
 {
+    bool legal = true;
     int srcRow = source[ROW_INDEX];
     int srcCol = source[COL_INDEX];
 
@@ -34,10 +35,10 @@ void Queen::checkLegalMove(int source[], int destination[], const Board& board)
 
     if (!isStraight && !isDiagonal)
     {
-        throw std::string("Piece can't move that way");
+        legal = false;
     }
 
-    if (isStraight)
+    if (isStraight && legal)
     {
         if (rowDiff == 0)
         {
@@ -47,7 +48,7 @@ void Queen::checkLegalMove(int source[], int destination[], const Board& board)
                 {
                     if (board.getPiece(srcRow, col)->getType() != "empty")
                     {
-                        throw std::string("Piece can't move that way");
+                        legal = false;
                     }
                 }
             }
@@ -57,7 +58,7 @@ void Queen::checkLegalMove(int source[], int destination[], const Board& board)
                 {
                     if (board.getPiece(srcRow, col)->getType() != "empty")
                     {
-                        throw std::string("Piece can't move that way");
+                        legal = false;
                     }
                 }
             }
@@ -70,7 +71,7 @@ void Queen::checkLegalMove(int source[], int destination[], const Board& board)
                 {
                     if (board.getPiece(row, srcCol)->getType() != "empty")
                     {
-                        throw std::string("Piece can't move that way");
+                        legal = false;
                     }
                 }
             }
@@ -80,7 +81,7 @@ void Queen::checkLegalMove(int source[], int destination[], const Board& board)
                 {
                     if (board.getPiece(row, srcCol)->getType() != "empty")
                     {
-                        throw std::string("Piece can't move that way");
+                        legal = false;
                     }
                 }
             }
@@ -116,10 +117,11 @@ void Queen::checkLegalMove(int source[], int destination[], const Board& board)
 
             if (board.getPiece(currentRow, currentCol)->getType() != "empty")
             {
-                throw std::string("Piece can't move that way");
+                legal = false;
             }
         }
     }
+    return legal;
 }
 
 /*Checks if the queen is checking the enemy king

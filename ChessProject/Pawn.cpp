@@ -12,8 +12,9 @@ Pawn::~Pawn()
 }
 
 /*Checks if a move is legal for a pawn*/
-void Pawn::checkLegalMove(int source[], int destination[], const Board& board)
+bool Pawn::checkLegalMove(int source[], int destination[], const Board& board)
 {
+    bool legal = true;
     int srcRow = source[ROW_INDEX];
     int srcCol = source[COL_INDEX];
     int destRow = destination[ROW_INDEX];
@@ -42,36 +43,37 @@ void Pawn::checkLegalMove(int source[], int destination[], const Board& board)
         {
             if (board.getPiece(destRow, destCol)->getType() != "empty")
             {
-                throw std::string("Piece can't move that way (path blocked)");
+                legal = false;
             }
         }
-        else if (rowDiff == 2 * direction && srcRow == startRow)
+        else if (rowDiff == 2 * direction && srcRow == startRow && legal)
         {
             if (board.getPiece(srcRow + direction, srcCol)->getType() != "empty" || board.getPiece(destRow, destCol)->getType() != "empty")
             {
-                throw std::string("Piece can't move that way (path blocked)");
+                legal = false;
             }
         }
         else
         {
-            throw std::string("Piece can't move that way");
+            legal = false;
         }
     }
     else if (colDiff == 1 && rowDiff == direction)
     {
         if (board.getPiece(destRow, destCol)->getType() == "empty")
         {
-            throw std::string("Pawn can only move diagonally to capture");
+            legal = false;
         }
         if (board.getPiece(destRow, destCol)->getColor() == this->getColor())
         {
-            throw std::string("Piece can't move that way");
+            legal = false;
         }
     }
     else
     {
-        throw std::string("Piece can't move that way");
+        legal = false;
     }
+    return legal;
 }
 
 //Checks if the pawn is checking the enemy king

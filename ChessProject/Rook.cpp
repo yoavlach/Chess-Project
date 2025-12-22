@@ -17,8 +17,9 @@ Rook::~Rook()
 /*Checks if a move is legal for a rook
 input: the source coordinates, the destination coordinates and the board
 output: none*/
-void Rook::checkLegalMove(int source[], int destination[], const Board& board)
+bool Rook::checkLegalMove(int source[], int destination[], const Board& board)
 {
+    bool legal = true;
     int srcRow = source[ROW_INDEX];
     int srcCol = source[COL_INDEX];
 
@@ -31,11 +32,11 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
     // rook can move only in straight lines (row OR column)
     if (rowDiff != 0 && colDiff != 0)
     {
-        throw std::string("Piece can't move that way");
+        legal = false;
     }
     // horizontal move
 // horizontal move
-    if (rowDiff == 0)
+    else if (rowDiff == 0)
     {
         // moving left
         if (destCol < srcCol)
@@ -46,7 +47,7 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
                 // If ANY piece is here, the path is blocked
                 if (board.getPiece(srcRow, col)->getType() != "empty")
                 {
-                    throw std::string("Piece can't move that way");
+                    legal = false;
                 }
             }
         }
@@ -57,7 +58,7 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
             {
                 if (board.getPiece(srcRow, col)->getType() != "empty")
                 {
-                    throw std::string("Piece can't move that way");
+                    legal = false;
                 }
             }
         }
@@ -72,7 +73,7 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
             {
                 if (board.getPiece(row, srcCol)->getType() != "empty")
                 {
-                    throw std::string("Piece can't move that way");
+                    legal = false;
                 }
             }
         }
@@ -83,11 +84,12 @@ void Rook::checkLegalMove(int source[], int destination[], const Board& board)
             {
                 if (board.getPiece(row, srcCol)->getType() != "empty")
                 {
-                    throw std::string("Piece can't move that way");
+                    legal = false;
                 }
             }
         }
     }
+    return legal;
 }
 
 /*Checks if the rook is checking the enemy king

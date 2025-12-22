@@ -16,7 +16,7 @@ Knight::~Knight()
 /*Checks if a move is legal for a knight
 A Knight move is legal if it moves in an L-shape (2x1 or 1x2).
 Unlike the Rook, we do NOT check if the path is blocked.*/
-void Knight::checkLegalMove(int source[], int destination[], const Board& board)
+bool Knight::checkLegalMove(int source[], int destination[], const Board& board)
 {
     int srcRow = source[ROW_INDEX];
     int srcCol = source[COL_INDEX];
@@ -27,13 +27,7 @@ void Knight::checkLegalMove(int source[], int destination[], const Board& board)
     int rowDiff = std::abs(srcRow - destRow);
     int colDiff = std::abs(srcCol - destCol);
 
-    bool isLShape = (rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2);
-
-    if (!isLShape)
-    {
-        throw std::string("Piece can't move that way");
-    }
-
+    return (rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2);
 }
 
 /*Checks if the knight is checking the enemy king

@@ -18,7 +18,7 @@ King::~King()
 /*Checks if a move is legal for a king
 input: the source coordinates, the destination coordinates and the board
 output: none*/
-void King::checkLegalMove(int source[], int destination[], const Board& board)
+bool King::checkLegalMove(int source[], int destination[], const Board& board)
 {
     int srcRow = source[0];
     int srcCol = source[1];
@@ -29,10 +29,7 @@ void King::checkLegalMove(int source[], int destination[], const Board& board)
     int rowDiff = std::abs(srcRow - destRow);
     int colDiff = std::abs(srcCol - destCol);
 
-    if (rowDiff > 1 || colDiff > 1)
-    {
-        throw std::string("Piece can't move that way");
-    }
+    return rowDiff > 1 || colDiff > 1;
 }
 
 /*Checks if the king is checking the enemy king

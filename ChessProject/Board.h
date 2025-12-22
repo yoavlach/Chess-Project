@@ -19,6 +19,7 @@
 #define COL_INDEX 1
 #define BOARD_INDEX_ARR_SIZE 2
 enum PIECES_INDEXES { LEFT_ROOK, LEFT_KNIGHT, LEFT_BISHOP, QUEEN, KING, RIGHT_BISHOP, RIGHT_KNIGHT, RIGHT_ROOK };
+enum MSG_CODES { VALID_MOVE, VALID_MOVE_CHECK, NO_PIECE_IN_SOURCE, SAME_COLOR_IN_DEST, MOVE_CAUSES_SELF_CHECK, ILLEGAL_INDEX, ILLEGAL_PIECE_MOVE, SAME_SOURCE_AND_DEST, VALID_MOVE_CHECKMATE };
 
 class ChessPiece;
 
@@ -28,13 +29,13 @@ public:
 	Board();
 	~Board();
 	void initPlayerSide(const std::string& color);
-	void checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::string& dest);
+	bool checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::string& dest);
 	bool checkIfMakeCheckOnOtherPlayer(const std::string& source, const std::string& dest) const;
-	void checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color) const;
-	void checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color) const;
-	void checkIllegalIndexes(const std::string& dest) const;
-	void checkIndexesSame(const std::string& source, const std::string& dest) const;
-	void move(const std::string& source, const std::string& destination);
+	bool checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color) const;
+	bool checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color) const;
+	bool checkIllegalIndexes(const std::string& dest) const;
+	bool checkIndexesSame(const std::string& source, const std::string& dest) const;
+	int move(const std::string& source, const std::string& destination);
 	void move(int src[], int dest[]);
 	void translateStringToIndexes(const std::string& str, int indexes[]) const;
 	ChessPiece*** getBoard() const;

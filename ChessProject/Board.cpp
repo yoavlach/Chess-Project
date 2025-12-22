@@ -63,58 +63,49 @@ Board::~Board()
 /*Checks if there is a piece of the same color at the destination
 input: the destination coordinates and the player color
 output: none*/
-void Board::checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color) const
+bool Board::checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color) const
 {
+	bool legal = true;
 	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
 	translateStringToIndexes(dest, destArr);
-	if (_board[destArr[ROW_INDEX]][destArr[COL_INDEX]]->getColor() == color)
-	{
-		delete[] destArr;
-		throw std::string("Piece in destination belongs to current player");
-	}
+	legal = _board[destArr[ROW_INDEX]][destArr[COL_INDEX]]->getColor() == color;
 	delete[] destArr;
+	return legal;
 }
 
 /*Checks if the piece at the source belongs to the current player
 input: the source coordinates and the player color
 output: none*/
-void Board::checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color)  const
+bool Board::checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color)  const
 {
+	bool legal = true;
 	int* srcArr = new int[BOARD_INDEX_ARR_SIZE];
 	translateStringToIndexes(source, srcArr);
-	if (_board[srcArr[ROW_INDEX]][srcArr[COL_INDEX]]->getColor() != color)
-	{
-		delete[] srcArr;
-		throw std::string("Piece in source doesn't belong to current player");
-	}
+	legal = _board[srcArr[ROW_INDEX]][srcArr[COL_INDEX]]->getColor() != color;
 	delete[] srcArr;
+	return legal;
 }
 
 /*Checks if the destination coordinates are valid
 input: the destination coordinates
 output: none*/
-void Board::checkIllegalIndexes(const std::string& dest) const
+bool Board::checkIllegalIndexes(const std::string& dest) const
 {
+	bool legal = true;
 	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
 	translateStringToIndexes(dest, destArr);
-	if (!(destArr[ROW_INDEX] >= 0 && destArr[ROW_INDEX] < ROWS_AND_COLS &&
-		destArr[COL_INDEX] >= 0 && destArr[COL_INDEX] < ROWS_AND_COLS))
-	{
-		delete[] destArr;
-		throw std::string("Illegal indexes");
-	}
+	legal = !(destArr[ROW_INDEX] >= 0 && destArr[ROW_INDEX] < ROWS_AND_COLS &&
+		destArr[COL_INDEX] >= 0 && destArr[COL_INDEX] < ROWS_AND_COLS);
 	delete[] destArr;
+	return legal;
 }
 
 /*Checks if the source and destination coordinates are the same
 input: the source and destination coordinates
 output: none*/
-void Board::checkIndexesSame(const std::string& source, const std::string& dest) const
+bool Board::checkIndexesSame(const std::string& source, const std::string& dest) const
 {
-	if (source == dest)
-	{
-		throw std::string("Source and destination are the same");
-	}
+	return source == dest;
 }
 
 /*Converts string coordinates to array indexes
@@ -180,36 +171,36 @@ ChessPiece* Board::getPiece(int firstIndex, int secondIndex) const
 /*Moves a piece from the source to the destination
 input: the source and destination coordinates
 output: none*/
-void Board::move(const std::string& source, const std::string& destination)
+int Board::move(const std::string& source, const std::string& destination)
 {
 	std::cout << "Curr turn: " << (_turn ? "white" : "black") << "\n";
 	int sourceArr[BOARD_INDEX_ARR_SIZE];
 	int destArr[BOARD_INDEX_ARR_SIZE];
+	int msgCode = VALID_MOVE;
 	translateStringToIndexes(source, sourceArr);
 	translateStringToIndexes(destination, destArr);
+	if(checkIndexesSame(source, destination)) msgCode = SAME_SOURCE_AND_DEST;
+	if(msgCode == VALID_MOVE && checkIllegalIndexes(destination)) msgCode = ILLEGAL_INDEX;
+	if(msgCode == VALID_MOVE && checkIfPlayerOfSameColorInSource(source, _turn ? "white" : "black")) msgCode = NO_PIECE_IN_SOURCE;
+	if(msgCode == VALID_MOVE && checkIfPlayerOfSameColorInDest(destination, _turn ? "white" : "black")) msgCode = SAME_COLOR_IN_DEST;
+	if(msgCode == VALID_MOVE && _board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]]->checkLegalMove(sourceArr, destArr, *this)) msgCode = ILLEGAL_PIECE_MOVE;
 
-	checkIndexesSame(source, destination);
-	checkIllegalIndexes(destination);
-	checkIfPlayerOfSameColorInSource(source, _turn ? "white" : "black");
-	checkIfPlayerOfSameColorInDest(destination, _turn ? "white" : "black");
-	_board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]]->checkLegalMove(sourceArr, destArr, *this);
+	if(msgCode == VALID_MOVE && checkIfMakeCheckOnCurrPlayer(source, destination)) msgCode = MOVE_CAUSES_SELF_CHECK;
+	if(msgCode == VALID_MOVE) move(sourceArr, destArr);
 
-	checkIfMakeCheckOnCurrPlayer(source, destination);
+	if (msgCode == VALID_MOVE && checkIfMakeCheckOnOtherPlayer(source, destination)) msgCode = VALID_MOVE_CHECK;
 
-	move(sourceArr, destArr);
-
-	if (checkIfMakeCheckOnOtherPlayer(source, destination))
+	if (msgCode == VALID_MOVE || msgCode == VALID_MOVE_CHECK)
 	{
-		std::cout << "There is a check on " << (_turn ? "black" : "white") << "\n";
+		_turn = !_turn;
 	}
-
-	_turn = !_turn;
+	return msgCode;
 }
 
 /*Checks if a move will result in a check on the current player
 input: the source and destination coordinates
 output: none*/
-void Board::checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::string& dest)
+bool Board::checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::string& dest)
 {
 	int sourceArr[BOARD_INDEX_ARR_SIZE];
 	int destArr[BOARD_INDEX_ARR_SIZE];
@@ -244,10 +235,7 @@ void Board::checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::s
 	_board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]] = movingPiece;
 	_board[destArr[ROW_INDEX]][destArr[COL_INDEX]] = capturedPiece;
 
-	if (isCheck)
-	{
-		throw std::string("This move makes a check on the current player");
-	}
+	return isCheck;
 }
 
 /*Checks if a move will result in a check on the opponent

@@ -17,8 +17,9 @@ Bishop::~Bishop()
 /*Checks if a move is legal for a bishop
 input: the source coordinates, the destination coordinates and the board
 output: none*/
-void Bishop::checkLegalMove(int source[], int destination[], const Board& board)
+bool Bishop::checkLegalMove(int source[], int destination[], const Board& board)
 { 
+    bool legal = true;
     int srcRow = source[ROW_INDEX];
     int srcCol = source[COL_INDEX];
 
@@ -33,16 +34,16 @@ void Bishop::checkLegalMove(int source[], int destination[], const Board& board)
     // only moves diagonaly so must move x rows and x cols
     if (rowDiff != colDiff)
     {
-        throw std::string("Piece can't move that way");
+        legal = false;
     }
     //up
-    if (srcRow - destRow < 0)
+    else if (srcRow - destRow < 0)
     {
         for (row = row + 1; row < destRow; row++)
         {
             if (board.getPiece(row, col)->getType() != "empty")
             {
-                throw std::string("Piece can't move that way");
+                legal = false;
             }
             if (colDiff > 0) //right
             {
@@ -55,13 +56,13 @@ void Bishop::checkLegalMove(int source[], int destination[], const Board& board)
         }
     }
     //down
-    else
+    else if(legal)
     {
         for (row = row - 1; row > destRow; row--)
         {
             if (board.getPiece(row, col)->getType() != "empty")
             {
-                throw std::string("Piece can't move that way");
+                legal = false;
             }
             if (colDiff > 0) //right
             {
@@ -73,6 +74,7 @@ void Bishop::checkLegalMove(int source[], int destination[], const Board& board)
             }
         }
     }
+    return legal;
 }
 
 /*Checks if the bishop is checking the enemy king
