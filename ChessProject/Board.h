@@ -38,6 +38,7 @@ public:
 	int move(const std::string& source, const std::string& destination);
 	void move(int src[], int dest[]);
 	void translateStringToIndexes(const std::string& str, int indexes[]) const;
+	void translateStringToIndexes(const std::string& str, int source[], int dest[]) const;
 	ChessPiece*** getBoard() const;
 	void printBoard() const;
 	ChessPiece* getPiece(int firstIndex, int secondIndex) const;

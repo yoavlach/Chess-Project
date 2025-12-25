@@ -29,7 +29,7 @@ bool King::checkLegalMove(int source[], int destination[], const Board& board)
     int rowDiff = std::abs(srcRow - destRow);
     int colDiff = std::abs(srcCol - destCol);
 
-    return rowDiff > 1 || colDiff > 1;
+    return rowDiff <= 1 && colDiff <= 1;
 }
 
 /*Checks if the king is checking the enemy king

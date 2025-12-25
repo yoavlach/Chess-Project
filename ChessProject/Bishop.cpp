@@ -28,50 +28,24 @@ bool Bishop::checkLegalMove(int source[], int destination[], const Board& board)
 
     int rowDiff = std::abs(srcRow - destRow);
     int colDiff = std::abs(srcCol - destCol);
-
-    int colAndRow = 0, row = srcRow, col = srcCol;
+    int row = srcRow < destRow ? srcRow + 1 : srcRow - 1;
+    int col = srcCol < destCol ? srcCol + 1 : srcCol - 1;
 
     // only moves diagonaly so must move x rows and x cols
     if (rowDiff != colDiff)
     {
         legal = false;
     }
-    //up
-    else if (srcRow - destRow < 0)
+    else
     {
-        for (row = row + 1; row < destRow; row++)
+        while (row != destRow)
         {
             if (board.getPiece(row, col)->getType() != "empty")
             {
                 legal = false;
             }
-            if (colDiff > 0) //right
-            {
-                col++;
-            }
-            else //left
-            {
-                col--;
-            }
-        }
-    }
-    //down
-    else if(legal)
-    {
-        for (row = row - 1; row > destRow; row--)
-        {
-            if (board.getPiece(row, col)->getType() != "empty")
-            {
-                legal = false;
-            }
-            if (colDiff > 0) //right
-            {
-                col++;
-            }
-            else //left
-            {
-                col--;
-            }
+            col = srcCol < destCol ? col + 1 : col - 1;
+            row = srcRow < destRow ? row + 1 : row - 1;
         }
     }
     return legal;
@@ -87,34 +61,17 @@ bool Bishop::checkMakeCheck(int source[], const Board& board)
     std::string currColor = board.getPiece(srcRow, srcCol)->getColor();
     bool makeCheck = false;
     bool blocked = false;
+    bool inBounds = true;
     int row = srcRow, col = srcCol;
     std::string type = "", color = "";
     int i = 0;
-    for (i = UP_RIGHT; i < DOWN_LEFT; i++)
+    for (i = UP_RIGHT; i <= DOWN_LEFT; i++)
     {
+        inBounds = true;
         row = srcRow, col = srcCol;
         blocked = false;
-        while ((i == UP_RIGHT && row < ROWS_AND_COLS && col < ROWS_AND_COLS) ||
-            (i == UP_LEFT && row < ROWS_AND_COLS && col > 0) ||
-            (i == DOWN_RIGHT && row > 0 && col < ROWS_AND_COLS) ||
-            (i == DOWN_LEFT && row > 0 && col > 0))
+        while (inBounds && !blocked && !makeCheck)
         {
-            if (!blocked)
-            {
-                type = board.getPiece(row, col)->getType();
-                color = board.getPiece(row, col)->getColor();
-                if (type != "empty")
-                {
-                    if (type == "king" && color != currColor)
-                    {
-                        makeCheck = true;
-                    }
-                    else
-                    {
-                        blocked = true;
-                    }
-                }
-            }
             switch (i)
             {
             case UP_RIGHT:
@@ -129,6 +86,23 @@ bool Bishop::checkMakeCheck(int source[], const Board& board)
             case DOWN_LEFT:
                 row--, col--;
                 break;
+            }
+            inBounds = row >= 0 && row < ROWS_AND_COLS && col >= 0 && col < ROWS_AND_COLS;
+            if (inBounds)
+            {
+                type = board.getPiece(row, col)->getType();
+                color = board.getPiece(row, col)->getColor();
+                if (type != "empty")
+                {
+                    if (type == "king" && color != currColor)
+                    {
+                        makeCheck = true;
+                    }
+                    else
+                    {
+                        blocked = true;
+                    }
+                }
             }
         }
     }

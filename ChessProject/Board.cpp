@@ -117,6 +117,14 @@ void Board::translateStringToIndexes(const std::string& str, int indexes[]) cons
 	indexes[COL_INDEX] = str[0] - 'a'; // column
 }
 
+void Board::translateStringToIndexes(const std::string& str, int source[], int dest[]) const
+{
+	std::string currPart = { str[0], str[1] };
+	translateStringToIndexes(currPart, source);
+	currPart = { str[2], str[3] };
+	translateStringToIndexes(currPart, dest);
+}
+
 /*Gets the board array
 input: none
 output: the board array*/
@@ -183,7 +191,7 @@ int Board::move(const std::string& source, const std::string& destination)
 	if(msgCode == VALID_MOVE && checkIllegalIndexes(destination)) msgCode = ILLEGAL_INDEX;
 	if(msgCode == VALID_MOVE && checkIfPlayerOfSameColorInSource(source, _turn ? "white" : "black")) msgCode = NO_PIECE_IN_SOURCE;
 	if(msgCode == VALID_MOVE && checkIfPlayerOfSameColorInDest(destination, _turn ? "white" : "black")) msgCode = SAME_COLOR_IN_DEST;
-	if(msgCode == VALID_MOVE && _board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]]->checkLegalMove(sourceArr, destArr, *this)) msgCode = ILLEGAL_PIECE_MOVE;
+	if(msgCode == VALID_MOVE && !_board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]]->checkLegalMove(sourceArr, destArr, *this)) msgCode = ILLEGAL_PIECE_MOVE;
 
 	if(msgCode == VALID_MOVE && checkIfMakeCheckOnCurrPlayer(source, destination)) msgCode = MOVE_CAUSES_SELF_CHECK;
 	if(msgCode == VALID_MOVE) move(sourceArr, destArr);
