@@ -12,12 +12,13 @@ in order to read and write information from and to the Backend
 #include <string.h>
 #include <thread>
 #include <chrono>
+#include <cstring>
 
 using std::cout;
 using std::endl;
 using std::string;
 
-void main()
+int main()
 {
 	srand(time_t(NULL));
 	Board* b = new Board();
@@ -39,21 +40,24 @@ void main()
 		else 
 		{
 			p.close();
-			return;
+			return 0;
 		}
 	}
 	char msgToGraphics[1024];
+	#ifdef _WIN32
 	strcpy_s(msgToGraphics, "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR0"); // just example...
 	p.sendMessageToGraphics(msgToGraphics);   // send the board string
+	#endif
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
 	while (msgFromGraphics != "quit")
 	{
 		int msg = b->move({msgFromGraphics[0], msgFromGraphics[1]}, { msgFromGraphics[2], msgFromGraphics[3] });
-		std::cout << "msg: " << msg << "\n";
-		char strMsg[BOARD_INDEX_ARR_SIZE] = { msg + '0', 0 };
+		char chMsg = msg + '0';
+		char strMsg[BOARD_INDEX_ARR_SIZE] = { chMsg, 0 };
 		p.sendMessageToGraphics(strMsg);
 		msgFromGraphics = p.getMessageFromGraphics();
 	}
 	p.close();
+	return 0;
 }

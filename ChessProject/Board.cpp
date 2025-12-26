@@ -181,7 +181,6 @@ input: the source and destination coordinates
 output: none*/
 int Board::move(const std::string& source, const std::string& destination)
 {
-	std::cout << "Curr turn: " << (_turn ? "white" : "black") << "\n";
 	int sourceArr[BOARD_INDEX_ARR_SIZE];
 	int destArr[BOARD_INDEX_ARR_SIZE];
 	int msgCode = VALID_MOVE;
