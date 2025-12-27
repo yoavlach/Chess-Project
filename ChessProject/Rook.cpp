@@ -19,73 +19,37 @@ input: the source coordinates, the destination coordinates and the board
 output: none*/
 bool Rook::checkLegalMove(int source[], int destination[], const Board& board)
 {
-    bool legal = true;
+    bool legal = true, reachDest = false;
     int srcRow = source[ROW_INDEX];
     int srcCol = source[COL_INDEX];
-
     int destRow = destination[ROW_INDEX];
     int destCol = destination[COL_INDEX];
-
     int rowDiff = std::abs(srcRow - destRow);
     int colDiff = std::abs(srcCol - destCol);
-
+    int row = srcRow, col = srcCol;
     // rook can move only in straight lines (row OR column)
     if (rowDiff != 0 && colDiff != 0)
     {
         legal = false;
     }
-    // horizontal move
-// horizontal move
-    else if (rowDiff == 0)
-    {
-        // moving left
-        if (destCol < srcCol)
-        {
-            // Iterate strictly between source and dest
-            for (int col = destCol + 1; col < srcCol; ++col)
-            {
-                // If ANY piece is here, the path is blocked
-                if (board.getPiece(srcRow, col)->getType() != "empty")
-                {
-                    legal = false;
-                }
-            }
-        }
-        // moving right
-        else
-        {
-            for (int col = srcCol + 1; col < destCol; ++col)
-            {
-                if (board.getPiece(srcRow, col)->getType() != "empty")
-                {
-                    legal = false;
-                }
-            }
-        }
-    }
-    // vertical move
     else
     {
-        // moving down
-        if (destRow > srcRow)
+        while (!reachDest && legal)
         {
-            for (int row = srcRow + 1; row < destRow; ++row)
+            if (destRow - srcRow > 0) row++;
+            else if (destRow - srcRow < 0) row--;
+            else if (destCol - srcCol > 0) col++;
+            else col--;
+            if (row != destRow || col != destCol)
             {
-                if (board.getPiece(row, srcCol)->getType() != "empty")
+                if (board.getPiece(row, col)->getType() != "empty")
                 {
                     legal = false;
                 }
             }
-        }
-        // moving up
-        else
-        {
-            for (int row = destRow + 1; row < srcRow; ++row)
+            else
             {
-                if (board.getPiece(row, srcCol)->getType() != "empty")
-                {
-                    legal = false;
-                }
+                reachDest = true;
             }
         }
     }
@@ -100,84 +64,40 @@ bool Rook::checkMakeCheck(int source[], const Board& board)
     int srcRow = source[ROW_INDEX];
     int srcCol = source[COL_INDEX];
     std::string currColor = board.getPiece(srcRow, srcCol)->getColor();
-    bool makeCheck = false;
-    bool blocked = false;
-    for (int j = srcCol + 1; j < ROWS_AND_COLS && !makeCheck; j++)
+    std::string type = "", color = "";
+    bool makeCheck = false, blocked = false, inBounds = true;
+    int direction = 0;
+    int row = 0, col = 0;
+    for (direction = UP; direction <= RIGHT && !makeCheck; direction++)
     {
-        if (!blocked)
+        blocked = false;
+        row = srcRow, col = srcCol;
+        inBounds = true;
+        while (inBounds && !blocked)
         {
-            std::string type = board.getPiece(srcRow, j)->getType();
-            std::string color = board.getPiece(srcRow, j)->getColor();
-            if (type != "empty")
+            if (direction == UP) row++;
+            else if (direction == DOWN) row--;
+            else if (direction == RIGHT) col++;
+            else col--;
+            if (row < ROWS_AND_COLS && row >= 0 && col < ROWS_AND_COLS && col >= 0 && !blocked)
             {
-                if (type == "king" && color != currColor)
+                type = board.getPiece(row, col)->getType();
+                color = board.getPiece(row, col)->getColor();
+                if (type != "empty")
                 {
-                    makeCheck = true;
-                }
-                else
-                {
-                    blocked = true;
+                    if (type == "king" && color != currColor)
+                    {
+                        makeCheck = true;
+                    }
+                    else
+                    {
+                        blocked = true;
+                    }
                 }
             }
-        }
-    }
-    blocked = false;
-    for (int j = srcCol - 1; j >= 0 && !makeCheck; j--)
-    {
-        if (!blocked)
-        {
-            std::string type = board.getPiece(srcRow, j)->getType();
-            std::string color = board.getPiece(srcRow, j)->getColor();
-            if (type != "empty")
+            else
             {
-                if (type == "king" && color != currColor)
-                {
-                    makeCheck = true;
-                }
-                else
-                {
-                    blocked = true;
-                }
-            }
-        }
-    }
-    blocked = false;
-    for (int i = srcRow - 1; i >= 0 && !makeCheck; i--)
-    {
-        if (!blocked)
-        {
-            std::string type = board.getPiece(i, srcCol)->getType();
-            std::string color = board.getPiece(i, srcCol)->getColor();
-            if (type != "empty")
-            {
-                if (type == "king" && color != currColor)
-                {
-                    makeCheck = true;
-                }
-                else
-                {
-                    blocked = true;
-                }
-            }
-        }
-    }
-    blocked = false;
-    for (int i = srcRow + 1; i < ROWS_AND_COLS && !makeCheck; i++)
-    {
-        if (!blocked)
-        {
-            std::string type = board.getPiece(i, srcCol)->getType();
-            std::string color = board.getPiece(i, srcCol)->getColor();
-            if (type != "empty")
-            {
-                if (type == "king" && color != currColor)
-                {
-                    makeCheck = true;
-                }
-                else
-                {
-                    blocked = true;
-                }
+                inBounds = false;
             }
         }
     }

@@ -2,6 +2,8 @@
 #include "ChessPiece.h"
 #include "Board.h"
 
+enum DIRECTIONS {UP, DOWN, LEFT, RIGHT};
+
 class Rook : public ChessPiece
 {
 public:
