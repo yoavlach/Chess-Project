@@ -87,11 +87,11 @@ bool Pawn::checkMakeCheck(int source[], const Board& board)
 
     if (currColor == "white")
     {
-        direction = -1;
+        direction = 1;
     }
     else
     {
-        direction = 1;
+        direction = -1;
     }
 
     int checkRows[] = { srcRow + direction, srcRow + direction };

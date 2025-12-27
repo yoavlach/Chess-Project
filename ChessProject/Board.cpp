@@ -58,7 +58,9 @@ Board::~Board()
 		{
 			delete _board[i][j];
 		}
+		delete[] _board[i];
 	}
+	delete[] _board;
 }
 /*Checks if there is a piece of the same color at the destination
 input: the destination coordinates and the player color
@@ -66,10 +68,9 @@ output: none*/
 bool Board::checkIfPlayerOfSameColorInDest(const std::string& dest, const std::string& color) const
 {
 	bool legal = true;
-	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
+	int destArr[BOARD_INDEX_ARR_SIZE] = { 0 };
 	translateStringToIndexes(dest, destArr);
 	legal = _board[destArr[ROW_INDEX]][destArr[COL_INDEX]]->getColor() == color;
-	delete[] destArr;
 	return legal;
 }
 
@@ -79,10 +80,9 @@ output: none*/
 bool Board::checkIfPlayerOfSameColorInSource(const std::string& source, const std::string& color)  const
 {
 	bool legal = true;
-	int* srcArr = new int[BOARD_INDEX_ARR_SIZE];
+	int srcArr[BOARD_INDEX_ARR_SIZE] = { 0 };
 	translateStringToIndexes(source, srcArr);
 	legal = _board[srcArr[ROW_INDEX]][srcArr[COL_INDEX]]->getColor() != color;
-	delete[] srcArr;
 	return legal;
 }
 
@@ -92,11 +92,10 @@ output: none*/
 bool Board::checkIllegalIndexes(const std::string& dest) const
 {
 	bool legal = true;
-	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
+	int destArr[BOARD_INDEX_ARR_SIZE] = { 0 };
 	translateStringToIndexes(dest, destArr);
 	legal = !(destArr[ROW_INDEX] >= 0 && destArr[ROW_INDEX] < ROWS_AND_COLS &&
 		destArr[COL_INDEX] >= 0 && destArr[COL_INDEX] < ROWS_AND_COLS);
-	delete[] destArr;
 	return legal;
 }
 
@@ -187,7 +186,7 @@ int Board::move(const std::string& source, const std::string& destination)
 	translateStringToIndexes(source, sourceArr);
 	translateStringToIndexes(destination, destArr);
 	if(checkIndexesSame(source, destination)) msgCode = SAME_SOURCE_AND_DEST;
-	if(msgCode == VALID_MOVE && checkIllegalIndexes(destination)) msgCode = ILLEGAL_INDEX;
+	if(msgCode == VALID_MOVE && (checkIllegalIndexes(destination) || checkIllegalIndexes(source))) msgCode = ILLEGAL_INDEX;
 	if(msgCode == VALID_MOVE && checkIfPlayerOfSameColorInSource(source, _turn ? "white" : "black")) msgCode = NO_PIECE_IN_SOURCE;
 	if(msgCode == VALID_MOVE && checkIfPlayerOfSameColorInDest(destination, _turn ? "white" : "black")) msgCode = SAME_COLOR_IN_DEST;
 	if(msgCode == VALID_MOVE && !_board[sourceArr[ROW_INDEX]][sourceArr[COL_INDEX]]->checkLegalMove(sourceArr, destArr, *this)) msgCode = ILLEGAL_PIECE_MOVE;
@@ -209,9 +208,9 @@ input: the source and destination coordinates
 output: none*/
 bool Board::checkIfMakeCheckOnCurrPlayer(const std::string& source, const std::string& dest)
 {
-	int sourceArr[BOARD_INDEX_ARR_SIZE];
-	int destArr[BOARD_INDEX_ARR_SIZE];
-	int attackerPos[BOARD_INDEX_ARR_SIZE];
+	int sourceArr[BOARD_INDEX_ARR_SIZE] = { 0 };
+	int destArr[BOARD_INDEX_ARR_SIZE] = { 0 };
+	int attackerPos[BOARD_INDEX_ARR_SIZE] = { 0 };
 	translateStringToIndexes(source, sourceArr);
 	translateStringToIndexes(dest, destArr);
 
@@ -251,9 +250,9 @@ output: true if the move causes a check, false otherwise*/
 bool Board::checkIfMakeCheckOnOtherPlayer(const std::string& source, const std::string& dest) const
 {
 	bool makeCheck = false;
-	int* sourceArr = new int[BOARD_INDEX_ARR_SIZE];
-	int* destArr = new int[BOARD_INDEX_ARR_SIZE];
-	int* attackerPos = new int[BOARD_INDEX_ARR_SIZE];
+	int sourceArr[BOARD_INDEX_ARR_SIZE] = { 0 };
+	int destArr[BOARD_INDEX_ARR_SIZE] = { 0 };
+	int attackerPos[BOARD_INDEX_ARR_SIZE] = { 0 };
 	translateStringToIndexes(source, sourceArr);
 	translateStringToIndexes(dest, destArr);
 	std::string currPlayerColor = _turn ? "white" : "black";
@@ -267,9 +266,6 @@ bool Board::checkIfMakeCheckOnOtherPlayer(const std::string& source, const std::
 			makeCheck = _board[i][j]->getColor() == currPlayerColor && _board[i][j]->checkMakeCheck(attackerPos, *this);
 		}
 	}
-	delete[] sourceArr;
-	delete[] destArr;
-	delete[] attackerPos;
 	return makeCheck;
 }
 

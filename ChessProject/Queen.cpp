@@ -32,94 +32,14 @@ bool Queen::checkLegalMove(int source[], int destination[], const Board& board)
 
     bool isStraight = (srcRow == destRow || srcCol == destCol);
     bool isDiagonal = (rowDiff == colDiff);
-
     if (!isStraight && !isDiagonal)
     {
         legal = false;
     }
-
-    if (isStraight && legal)
-    {
-        if (rowDiff == 0)
-        {
-            if (destCol < srcCol)
-            {
-                for (int col = destCol + 1; col < srcCol; ++col)
-                {
-                    if (board.getPiece(srcRow, col)->getType() != "empty")
-                    {
-                        legal = false;
-                    }
-                }
-            }
-            else
-            {
-                for (int col = srcCol + 1; col < destCol; ++col)
-                {
-                    if (board.getPiece(srcRow, col)->getType() != "empty")
-                    {
-                        legal = false;
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (destRow > srcRow)
-            {
-                for (int row = srcRow + 1; row < destRow; ++row)
-                {
-                    if (board.getPiece(row, srcCol)->getType() != "empty")
-                    {
-                        legal = false;
-                    }
-                }
-            }
-            else
-            {
-                for (int row = destRow + 1; row < srcRow; ++row)
-                {
-                    if (board.getPiece(row, srcCol)->getType() != "empty")
-                    {
-                        legal = false;
-                    }
-                }
-            }
-        }
-    }
     else
     {
-        int rowStep = 0;
-        int colStep = 0;
-
-        if (destRow > srcRow)
-        {
-            rowStep = 1;
-        }
-        else
-        {
-            rowStep = -1;
-        }
-
-        if (destCol > srcCol)
-        {
-            colStep = 1;
-        }
-        else
-        {
-            colStep = -1;
-        }
-
-        for (int i = 1; i < rowDiff; ++i)
-        {
-            int currentRow = srcRow + (i * rowStep);
-            int currentCol = srcCol + (i * colStep);
-
-            if (board.getPiece(currentRow, currentCol)->getType() != "empty")
-            {
-                legal = false;
-            }
-        }
+        legal = isStraight ? Rook("rook", board.getPiece(srcRow, srcCol)->getColor()).checkLegalMove(source, destination, board) :
+            Bishop("bishop", board.getPiece(srcRow, srcCol)->getColor()).checkLegalMove(source, destination, board);
     }
     return legal;
 }
@@ -130,11 +50,5 @@ output: true if the queen is checking the king, false otherwise*/
 bool Queen::checkMakeCheck(int source[], const Board& board)
 {
     std::string currColor = board.getPiece(source[ROW_INDEX], source[COL_INDEX])->getColor();
-    bool makeCheck = false;
-    Bishop* checkBishop = new Bishop("bishop", currColor);
-    Rook* checkRook = new Rook("rook", currColor);
-    makeCheck = checkBishop->checkMakeCheck(source, board) || checkRook->checkMakeCheck(source, board);
-    delete(checkBishop);
-    delete(checkRook);
-    return makeCheck;
+    return Bishop("bishop", currColor).checkMakeCheck(source, board) || Rook("rook", currColor).checkMakeCheck(source, board);
 }

@@ -43,7 +43,7 @@ bool King::checkMakeCheck(int source[], const Board& board)
         int checkCol = 0;
         bool makeCheck = false;
         std::string sourceColor = board.getPiece(srcRow, srcCol)->getColor();
-        for (int i = -1; i <= 1; i++)
+        for (int i = -1; i <= 1 && !makeCheck; i++)
         {
             for (int j = -1; j <= 1; j++)
             {
